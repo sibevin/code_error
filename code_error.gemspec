@@ -70,7 +70,7 @@ Rescue and handle it.
 
 Please see "README" to get more details.
   EOF
-  spec.homepage      = "https://github.com/sibevin/error_code"
+  spec.homepage      = "https://github.com/sibevin/code_error"
   spec.license       = "MIT"
   spec.files         = `git ls-files`.split($/)
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
