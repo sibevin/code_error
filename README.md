@@ -16,7 +16,7 @@ It is a standard error but it provides more.
 
 ### Basic
 
-* Inherit CodeError::Base to create your own code-based error. You need to implement the "error_codes" method which provides a hash to define your own error code map.
+Inherit CodeError::Base to create your own code-based error. You need to implement the "error_codes" method which provides a hash to define your own error code map.
 
     class MyError < CodeError::Base
 
@@ -48,11 +48,11 @@ It is a standard error but it provides more.
       end
     end
 
-* Raise an error with a code when you need.
+Raise an error with a code when you need.
 
     raise MyError.new(20001)
 
-* Rescue and handle it.
+Rescue and handle it.
 
     begin
       #...
