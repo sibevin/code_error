@@ -16,7 +16,7 @@ It is a standard error but it provides more.
 
 ### Basic
 
-Inherit CodeError::Base to create your own code-based error. You need to implement the "error_codes" method which provides a hash to define your own error code map.
+* Inherit CodeError::Base to create your own code-based error. You need to implement the "error_codes" method which provides a hash to define your own error code map.
 
     class MyError < CodeError::Base
 
@@ -48,11 +48,11 @@ Inherit CodeError::Base to create your own code-based error. You need to impleme
       end
     end
 
-Raise an error with a code when you need.
+* Raise an error with a code when you need.
 
     raise MyError.new(20001)
 
-Rescue and handle it.
+* Rescue and handle it.
 
     begin
       #...
@@ -96,7 +96,7 @@ A customized code-based error class need to implement the "error_codes" method w
         20100 => {
           status: :duplicated,
           msg: 'A duplicated IAP request is sent.',
-	  masked: true
+          masked: true
         },
         20200 => {
           status: :retry,
@@ -107,9 +107,9 @@ A customized code-based error class need to implement the "error_codes" method w
 
 where keys are the supported codes and each value is an another hash to store the code information corresponding each codes. The code information hash contains the following keys:
 
-1. :status - [any type you like] The error status to define the error handling flow. You can get it by calling the "status" method.
-2. :msg - [String] The error message. You can get it by calling the "msg" method.
-3. :masked - (optional)[Boolean] To define the error message is masked by default or not. The default value is false if no `:masked` is given.
+* :status - [any type you like] The error status to define the error handling flow. You can get it by calling the "status" method.
+* :msg - [String] The error message. You can get it by calling the "msg" method.
+* :masked - (optional)[Boolean] To define the error message is masked by default or not. The default value is false if no `:masked` is given.
 
 ### Raise a code-based error
 
@@ -214,10 +214,10 @@ You can override the `config` method in your code-based error to customize the d
 
 where the config hash contains the following keys:
 
-1. :success - Define the success code, status and message.
-2. :internal - Define the internal error code, status and message.
-3. :masked_msg - [String] Define the message to replace the masked one.
-4. :code_in_msg - [:append/:prepend/:none] Define how to embed code in the message. The default option is :append.
+* :success - Define the success code, status and message.
+* :internal - Define the internal error code, status and message.
+* :masked_msg - [String] Define the message to replace the masked one.
+* :code_in_msg - [:append/:prepend/:none] Define how to embed code in the message. The default option is :append.
 
 ### Mask the error message
 
@@ -308,13 +308,13 @@ And the i18n yml file is:
     en:
       code_error:
         my_error:
-	  append_code_msg: "%{msg}(%{code})"
-	  prepend_code_msg: "(%{code})%{msg}"
-	  purchase_info_invalid: "Purchase information format is incorrect."
-	  device_info_invalid: "Device information format is incorrect."
-	  unknown_store: "Unknown Store."
-	  duplicated_request: "A duplicated IAP request is sent."
-	  retry: "Client should send the IAP request again."
+          append_code_msg: "%{msg}(%{code})"
+          prepend_code_msg: "(%{code})%{msg}"
+          purchase_info_invalid: "Purchase information format is incorrect."
+          device_info_invalid: "Device information format is incorrect."
+          unknown_store: "Unknown Store."
+          duplicated_request: "A duplicated IAP request is sent."
+          retry: "Client should send the IAP request again."
 
 ## Test
 
