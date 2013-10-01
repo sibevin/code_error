@@ -49,7 +49,7 @@ module CodeError
 
     def data(masked = nil)
       msg = show_message(@code, @msg, masked)
-      { status: @status, code: @code, msg: msg, info: @info }
+      { :status => @status, :code => @code, :msg => msg, :info => @info }
     end
 
     def msg(masked = nil)
