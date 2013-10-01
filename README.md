@@ -2,6 +2,10 @@
 
 A code-based customized error.
 
+[![Gem Version](https://badge.fury.io/rb/code_error.png)][gem]
+
+[gem]: https://rubygems.org/gems/code_error
+
     raise MyError.new(10002)
 
 ## Why?
