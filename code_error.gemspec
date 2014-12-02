@@ -40,13 +40,13 @@ Inherit CodeError::Base to create your own code-based error. You need to assign 
 
 Raise an error with a code when you need.
 
-    raise MyError.new(:purchase_info_incorrect)
+    raise MyError.gen(:purchase_info_incorrect)
 
 Rescue and handle it.
 
     begin
       #...
-      raise MyError.new(:purchase_info_incorrect)
+      raise MyError.gen(:purchase_info_incorrect)
       #...
     rescue MyError => e
       raise e if e.internal?
