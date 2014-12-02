@@ -10,7 +10,7 @@ A code-based customized error.
 [travis]: https://travis-ci.org/sibevin/code_error
 [coverall]: https://coveralls.io/r/sibevin/code_error?branch=cover-check
 
-    raise MyError.new(:wrong_format)
+    raise MyError.gen(:wrong_format)
 
 ## Why?
 
@@ -55,13 +55,13 @@ Inherit CodeError::Base to create your own code-based error. You need to assign 
 
 Raise an error with a code when you need.
 
-    raise MyError.new(:purchase_info_incorrect)
+    raise MyError.gen(:purchase_info_incorrect)
 
 Rescue and handle it.
 
     begin
       #...
-      raise MyError.new(:purchase_info_incorrect)
+      raise MyError.gen(:purchase_info_incorrect)
       #...
     rescue MyError => e
       raise e if e.internal?
@@ -120,25 +120,25 @@ where the hash key is the supported code which can be a symbol, number or string
 
 Once you setup the error codes, raising a code-based error is easy.
 
-    raise MyError.new(:purchase_info_incorrect)
+    raise MyError.gen(:purchase_info_incorrect)
 
-There are two argments in the code error constructor, `MyError.new(code, options)`. If the given code is defined in the error_codes, the error would contain the corresponding status and msg.
+There are two argments in the code error constructor, `MyError.gen(code, options)`. If the given code is defined in the error_codes, the error would contain the corresponding status and msg.
 
-    e = MyError.new(:purchase_info_incorrect)
+    e = MyError.gen(:purchase_info_incorrect)
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "Purchase information format is incorrect."
 
 You can give another string with the "msg" option to overwrite the original message:
 
-    e = MyError.new(:purchase_info_incorrect, msg: "The another message which would override the original one.")
+    e = MyError.gen(:purchase_info_incorrect, msg: "The another message which would override the original one.")
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "The another message which would override the original one."
 
 If the given code is unknown, the error would become an internal error, i.e., the status is the `:internal` status.
 
-    e = MyError.new(:unknown_error)
+    e = MyError.gen(:unknown_error)
     e.code # :unknown_error
     e.status # :internal
     e.msg # "An internal error occurs."
@@ -146,7 +146,7 @@ If the given code is unknown, the error would become an internal error, i.e., th
 
 If a string is given, the error is also an internal error, but the "msg" would keep this string.
 
-    e = MyError.new("Invalid input!!")
+    e = MyError.gen("Invalid input!!")
     e.code # :internal_error
     e.status # :internal
     e.msg # "Invalid input!!"
@@ -155,12 +155,12 @@ If a string is given, the error is also an internal error, but the "msg" would k
 You can pass anything you want to the error handling through the "info" option.
 
     something = 'what you want...'
-    e = MyError.new(:purchase_info_incorrect, info: something)
+    e = MyError.gen(:purchase_info_incorrect, info: something)
     e.info # 'what you want...'
 
 There is a special code `:success` which used in the success case.
 
-    e = MyError.new(:success)
+    e = MyError.gen(:success)
     e.code # :success
     e.status # :success
     e.msg # ""
@@ -179,7 +179,7 @@ When you rescue a code-based error, some useful methods are ready to use.
 
 Here is an example:
 
-    e = MyError.new(:purchase_info_incorrect, info: 'some information')
+    e = MyError.gen(:purchase_info_incorrect, info: 'some information')
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "Purchase information format is incorrect."
@@ -227,13 +227,13 @@ You can mask an error message if you don't want to show it. A masked message wou
 
 * Pass `masked: true` to the `msg` or `data` method.
 
-    e = MyError.new(:purchase_info_incorrect)
+    e = MyError.gen(:purchase_info_incorrect)
     e.msg(masked: ture) # "An error occurs."
     e.data(masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "An error occurs.", info: {} }
 
-* Pass the `masked: true` to the `new` method.
+* Pass the `masked: true` to the `gen` method.
 
-    e = MyError.new(:purchase_info_incorrect, masked: true)
+    e = MyError.gen(:purchase_info_incorrect, masked: true)
     e.msg # "An error occurs."
 
 * Add `masked: true` in the error_codes hash for particular error. Please see [Customize error code hash].
@@ -254,13 +254,13 @@ Same as the "mask" feature, there are several ways to do it, they are listed bel
 
 * Pass `pos` option to the `msg` or `data` method.
 
-    e = MyError.new(:purchase_info_incorrect)
+    e = MyError.gen(:purchase_info_incorrect)
     e.msg(pos: :append) # "Purchase information format is incorrect. (purchase_info_incorrect)"
     e.data(pos: :prepend, masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "(purchase_info_incorrect) An error occurs.", info: {} }
 
-* Pass the `pos` option to the `new` method.
+* Pass the `pos` option to the `gen` method.
 
-    e = MyError.new(:purchase_info_incorrect, pos: :append)
+    e = MyError.gen(:purchase_info_incorrect, pos: :append)
     e.msg # "Purchase information format is incorrect. (purchase_info_incorrect)"
 
 * Call `pos` in your error class. Please see [Configure your code-base error].
