@@ -1,3 +1,5 @@
+require 'rubygems'
+gem 'minitest'
 require 'minitest/autorun'
 
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}")
