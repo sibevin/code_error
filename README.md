@@ -3,8 +3,12 @@
 A code-based customized error.
 
 [![Gem Version](https://badge.fury.io/rb/code_error.png)][gem]
+[![Build Status](https://travis-ci.org/sibevin/code_error.svg?branch=build)][travis]
+[![Coverage Status](https://coveralls.io/repos/sibevin/code_error/badge.png?branch=cover-check)][coverall]
 
 [gem]: https://rubygems.org/gems/code_error
+[travis]: https://travis-ci.org/sibevin/code_error
+[coverall]: https://coveralls.io/r/sibevin/code_error?branch=cover-check
 
     raise MyError.new(:wrong_format)
 
