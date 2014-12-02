@@ -9,47 +9,44 @@ Gem::Specification.new do |spec|
   spec.email         = ["sibevin@gmail.com"]
   spec.description   = %q{A code-based customized error.}
   spec.summary       = <<-EOF
-Inherit CodeError::Base to create your own code-based error. You need to implement the "error_codes" method which provides a hash to define your own error code map.
+Inherit CodeError::Base to create your own code-based error. You need to assign "error_codes" with a hash to define your own error code map.
 
     class MyError < CodeError::Base
 
-      private
-
-      def error_codes
-        {
-          20001 => {
-            status: :failed,
-            msg: 'Purchase information format is incorrect.'
-          },
-          20002 => {
-            status: :failed,
-            msg: 'Device information format is incorrect.'
-          },
-          20003 => {
-            status: :failed,
-            msg: 'Unknown store.'
-          },
-          20100 => {
-            status: :duplicated,
-            msg: 'A duplicated IAP request is sent.'
-          },
-          20200 => {
-            status: :retry,
-            msg: 'Client should send the IAP request again.'
-          }
+      error_codes({
+        purchase_info_incorrect: {
+          status: :failed,
+          msg: 'Purchase information format is incorrect.'
+        },
+        device_info_incorrect: {
+          status: :failed,
+          msg: 'Device information format is incorrect.'
+        },
+        unknown_store: {
+          status: :failed,
+          msg: 'Unknown store.'
+        },
+        duplicated_request: {
+          status: :duplicated,
+          msg: 'A duplicated IAP request is sent.'
+        },
+        resend_iap: {
+          status: :retry,
+          msg: 'Client should send the IAP request again.'
         }
-      end
+      })
+
     end
 
 Raise an error with a code when you need.
 
-    raise MyError.new(20001)
+    raise MyError.new(:purchase_info_incorrect)
 
 Rescue and handle it.
 
     begin
       #...
-      raise MyError.new(20001)
+      raise MyError.new(:purchase_info_incorrect)
       #...
     rescue MyError => e
       raise e if e.internal?
@@ -75,4 +72,5 @@ Please see "README" to get more details.
   spec.files         = `git ls-files`.split($/)
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
+  spec.add_development_dependency 'minitest', '~> 5.0'
 end

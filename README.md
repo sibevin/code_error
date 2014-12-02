@@ -24,7 +24,7 @@ Inherit CodeError::Base to create your own code-based error. You need to assign 
 
     class MyError < CodeError::Base
 
-      error_codes {
+      error_codes({
         purchase_info_incorrect: {
           status: :failed,
           msg: 'Purchase information format is incorrect.'
@@ -45,7 +45,7 @@ Inherit CodeError::Base to create your own code-based error. You need to assign 
           status: :retry,
           msg: 'Client should send the IAP request again.'
         }
-      }
+      })
 
     end
 
@@ -80,7 +80,7 @@ Rescue and handle it.
 
 A customized code-based error class need to assign the "error_codes" method with a hash like:
 
-    error_codes {
+    error_codes({
       purchase_info_incorrect: {
         status: :failed,
         msg: 'Purchase information format is incorrect.'
@@ -103,13 +103,14 @@ A customized code-based error class need to assign the "error_codes" method with
         status: :retry,
         msg: 'Client should send the IAP request again.'
       }
-    }
+    })
 
-where the hash key is the supported code which can be a symbol, string or number and the hash value is an another hash to store the code information corresponding each codes. The code information hash contains the following keys:
+where the hash key is the supported code which can be a symbol, number or string and the hash value is an another hash to store the code information corresponding each codes. The code information hash contains the following keys:
 
 * :status - [any type you like] The error status to define the error handling flow. You can get it by calling the "status" method.
-* :msg - [String] The error message. You can get it by calling the "msg" method.
-* :masked - (optional)[Boolean] To define the error message is masked by default or not. The default value is false if no `:masked` is given.
+* :msg - [String] The error message. You can get it by calling the `msg` method.
+* :masked - [Boolean] To define the error message is masked by default or not. The default value is `false`. Please see [Mask the error message].
+* :pos - [:none,:append,:prepend] Define how to show the code in the error message. The default value is `:none`. Please see [Show code in the error message].
 
 #### Raise a code-based error
 
@@ -117,16 +118,16 @@ Once you setup the error codes, raising a code-based error is easy.
 
     raise MyError.new(:purchase_info_incorrect)
 
-There are three argments in the code error constructor, `MyError.new(code, msg, info)`. If the given code is defined in the error_codes, the error would contain the corresponding status and msg.
+There are two argments in the code error constructor, `MyError.new(code, options)`. If the given code is defined in the error_codes, the error would contain the corresponding status and msg.
 
     e = MyError.new(:purchase_info_incorrect)
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "Purchase information format is incorrect."
 
-You can give another string in "msg" arg to overwrite the original message:
+You can give another string with the "msg" option to overwrite the original message:
 
-    e = MyError.new(:purchase_info_incorrect, "The another message which would override the original one.")
+    e = MyError.new(:purchase_info_incorrect, msg: "The another message which would override the original one.")
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "The another message which would override the original one."
@@ -147,10 +148,10 @@ If a string is given, the error is also an internal error, but the "msg" would k
     e.msg # "Invalid input!!"
     e.internal? # true
 
-You can pass anything to the error handling you want through the "info" arg.
+You can pass anything you want to the error handling through the "info" option.
 
     something = 'what you want...'
-    e = MyError.new(:purchase_info_incorrect, nil, something)
+    e = MyError.new(:purchase_info_incorrect, info: something)
     e.info # 'what you want...'
 
 There is a special code `:success` which used in the success case.
@@ -174,12 +175,12 @@ When you rescue a code-based error, some useful methods are ready to use.
 
 Here is an example:
 
-    e = MyError.new(:purchase_info_incorrect, nil, 'some information')
+    e = MyError.new(:purchase_info_incorrect, info: 'some information')
     e.code # :purchase_info_incorrect
     e.status # :failed
     e.msg # "Purchase information format is incorrect."
     e.info # "some information"
-    e.data # { code: :purchase_info_incorrect, status: :failed, msg: "Purchase information format is incorrect.(20001)", info: 'some information' }
+    e.data # { code: :purchase_info_incorrect, status: :failed, msg: "Purchase information format is incorrect.", info: 'some information' }
     e.internal? # false
 
 ### Configure your code-base error
@@ -188,21 +189,21 @@ You can customize the default behavior in your code-based error. Here is an exam
 
     class MyError < CodeError::Base
 
-      error_codes {
+      error_codes({
         #...
-      }
+      })
 
-      success_config {
+      success_config({
         code: :ok,
         status: :success,
         msg: "My success message."
-      }
+      })
 
-      internal_config {
+      internal_config({
         code: :oops,
         status: :failed,
         msg: "My internal error message."
-      }
+      })
 
       masked_msg "My masked message."
 
@@ -213,25 +214,52 @@ where the configures are:
 * success_config - [Hash] Define the success code, status and message. The default value is `{ code: CodeError::SUCCESS_CODE, status: CodeError::SUCCESS_STATUS, msg: "" }`.
 * internal_config - [Hash] Define the internal error code, status and message. The default value is `{ code: CodeError::INTERNAL_CODE, status: CodeError::INTERNAL_STATUS, msg: "" }`.
 * masked_msg - [String] Define the message to replace the masked one. The default value is `CodeError::MASKED_MSG`.
+* masked - [Boolean] To define the error message is masked by default or not. The default value is `false`. Please see [Mask the error message].
+* pos - [:none,:append,:prepend] Define how to show the code in the error message. The default value is `:none`. Please see [Show code in the error message].
 
 #### Mask the error message
 
 You can mask an error message if you don't want to show it. A masked message would be replaced with the default masked message. There are several ways to do it, they are listed below sorted by the precedence.
 
-* Pass `true` to the "masked" arg in the "msg" or "data" method.
+* Pass `masked: true` to the `msg` or `data` method.
 
     e = MyError.new(:purchase_info_incorrect)
-    e.msg(ture) # "An error occurs."
-    e.data(true) # { code: :purchase_info_incorrect, status: :failed, msg: "An error occurs.", info: {} }
+    e.msg(masked: ture) # "An error occurs."
+    e.data(masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "An error occurs.", info: {} }
 
-* Pass the `:masked` to the "msg" arg in the "new" method.
+* Pass the `masked: true` to the `new` method.
 
-    e = MyError.new(:purchase_info_incorrect, :masked)
+    e = MyError.new(:purchase_info_incorrect, masked: true)
     e.msg # "An error occurs."
 
 * Add `masked: true` in the error_codes hash for particular error. Please see [Customize error code hash].
 
-The default masked message can be customized to your own message by overwriting the `:masked_msg` in your config hash. Please see [Configure your code-base error].
+* Call `masked true` in your error class. Please see [Configure your code-base error].
+
+The default masked message can be customized to your own message by calling the `masked_msg` in your error class. Please see [Configure your code-base error].
+
+#### Show code in the error message
+
+You can show code in the error message by giving a `pos` option. The supported options are `:none`, `:append`, and `:prepend`.
+
+* :none - (Default) Don't show code in the error message.
+* :append - Append the code after the error message. For example: "Purchase information format is incorrect. (purchase_info_incorrect)"
+* :prepend - Prepend the code before the error message. For example: "(purchase_info_incorrect) Purchase information format is incorrect."
+
+Same as the "mask" feature, there are several ways to do it, they are listed below sorted by the precedence.
+
+* Pass `pos` option to the `msg` or `data` method.
+
+    e = MyError.new(:purchase_info_incorrect)
+    e.msg(pos: :append) # "Purchase information format is incorrect. (purchase_info_incorrect)"
+    e.data(pos: :prepend, masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "(purchase_info_incorrect) An error occurs.", info: {} }
+
+* Pass the `pos` option to the `new` method.
+
+    e = MyError.new(:purchase_info_incorrect, pos: :append)
+    e.msg # "Purchase information format is incorrect. (purchase_info_incorrect)"
+
+* Call `pos` in your error class. Please see [Configure your code-base error].
 
 ## Test
 
