@@ -197,13 +197,13 @@ You can customize the default behavior in your code-based error. Here is an exam
         #...
       })
 
-      success_config({
+      success({
         code: :ok,
         status: :success,
         msg: "My success message."
       })
 
-      internal_config({
+      internal({
         code: :oops,
         status: :failed,
         msg: "My internal error message."
@@ -215,9 +215,9 @@ You can customize the default behavior in your code-based error. Here is an exam
 
 where the configures are:
 
-* success_config - [Hash] Define the success code, status and message. The default value is `{ code: CodeError::SUCCESS_CODE, status: CodeError::SUCCESS_STATUS, msg: "" }`.
-* internal_config - [Hash] Define the internal error code, status and message. The default value is `{ code: CodeError::INTERNAL_CODE, status: CodeError::INTERNAL_STATUS, msg: "" }`.
-* masked_msg - [String] Define the message to replace the masked one. The default value is `CodeError::MASKED_MSG`.
+* success - [Hash] Define the success code, status and message. The default value is `{ code: CodeError::SUCCESS_CODE, status: CodeError::SUCCESS_STATUS, msg: "" }`.
+* internal - [Hash] Define the internal error code, status and message. The default value is `{ code: CodeError::INTERNAL_CODE, status: CodeError::INTERNAL_STATUS, msg: CodeError::INTERNAL_MSG }`.
+* masked_msg - [String] Define the message to replace the masked one. The default value is `CodeError::DEFAULT_MASKED_MSG`.
 * masked - [Boolean] To define the error message is masked by default or not. The default value is `false`. Please see [Mask the error message].
 * pos - [:none,:append,:prepend] Define how to show the code in the error message. The default value is `:none`. Please see [Show code in the error message].
 
