@@ -105,7 +105,7 @@ module CodeError
 
     private_class_method :merge_klass_config
 
-    def initialize(code = nil, options = {}, code_map, klass_config)
+    def initialize(code = nil, options = {}, code_map = {}, klass_config = {})
       @code =       code
       @info =       options[:info]
       @masked_msg = options[:masked_msg] || klass_config[:masked_msg] || @@global_config[:masked_msg]
