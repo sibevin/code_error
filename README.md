@@ -227,14 +227,18 @@ You can mask an error message if you don't want to show it. A masked message wou
 
 * Pass `masked: true` to the `msg` or `data` method.
 
+
     e = MyError.gen(:purchase_info_incorrect)
     e.msg(masked: ture) # "An error occurs."
     e.data(masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "An error occurs.", info: {} }
 
+
 * Pass the `masked: true` to the `gen` method.
+
 
     e = MyError.gen(:purchase_info_incorrect, masked: true)
     e.msg # "An error occurs."
+
 
 * Add `masked: true` in the error_codes hash for particular error. Please see [Customize error code hash].
 
@@ -254,14 +258,18 @@ Same as the "mask" feature, there are several ways to do it, they are listed bel
 
 * Pass `pos` option to the `msg` or `data` method.
 
+
     e = MyError.gen(:purchase_info_incorrect)
     e.msg(pos: :append) # "Purchase information format is incorrect. (purchase_info_incorrect)"
     e.data(pos: :prepend, masked: true) # { code: :purchase_info_incorrect, status: :failed, msg: "(purchase_info_incorrect) An error occurs.", info: {} }
 
+
 * Pass the `pos` option to the `gen` method.
+
 
     e = MyError.gen(:purchase_info_incorrect, pos: :append)
     e.msg # "Purchase information format is incorrect. (purchase_info_incorrect)"
+
 
 * Call `pos` in your error class. Please see [Configure your code-base error].
 
