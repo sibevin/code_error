@@ -29,8 +29,8 @@ class TestConfig < Minitest::Test
   class ConfigError < CodeError::Base
     error_codes({
       CONFIG_ERROR_CODE_1 => {
-        status: CONFIG_ERROR_STATUS_1,
-        msg: CONFIG_ERROR_MSG_1,
+        :status => CONFIG_ERROR_STATUS_1,
+        :msg => CONFIG_ERROR_MSG_1,
       },
       CONFIG_ERROR_CODE_2 => {
         :status => CONFIG_ERROR_STATUS_2,
