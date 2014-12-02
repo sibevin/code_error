@@ -48,23 +48,23 @@ module CodeError
     end
 
     def self.success(data = {})
-      merge_klass_config( success: data )
+      merge_klass_config( :success => data )
     end
 
     def self.internal(data = {})
-      merge_klass_config( internal: data )
+      merge_klass_config( :internal => data )
     end
 
     def self.masked_msg(msg = nil)
-      merge_klass_config( masked_msg: msg )
+      merge_klass_config( :masked_msg => msg )
     end
 
     def self.masked(masked = false)
-      merge_klass_config( masked: masked )
+      merge_klass_config( :masked => masked )
     end
 
     def self.pos(pos = nil)
-      merge_klass_config( pos: pos )
+      merge_klass_config( :pos => pos )
     end
 
     def message
